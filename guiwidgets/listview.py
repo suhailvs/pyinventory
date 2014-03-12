@@ -1,5 +1,5 @@
 #guilistview.py
-from tkinter import *
+from Tkinter import *
 class MultiListbox(Frame):
     '''MultiListbox made by Labels as table header and Listbox as table colomns'''
     def __init__(self, master, lists):

@@ -1,7 +1,7 @@
 #tb.py
 
-from tkinter import *
-from tkinter.ttk import *
+from Tkinter import *
+from ttk import *
 def _init_toolbar(tbmaster):
     
     '''TOOLBAR CONTAINS ADD, EDIT, DELETE AND FIND BUTTONS

@@ -1,7 +1,7 @@
-from tkinter import *
-from tkinter.ttk import *
+from Tkinter import *
+from ttk import *
 import sql
-from guiwidgets.calendar import ttkCalendar
+#from guiwidgets.clndr import ttkCalendar
 from guiwidgets.listview import MultiListbox
 from blackbox import _init_toolbar
 from datetime import datetime #to understand currentdate
@@ -121,11 +121,14 @@ class FormMenu:
         self.lblbackground['image'] = self.imgback
 
     def calc_click(self):
-        import os
-        os.startfile('calc.exe')
+        #import os
+        #os.startfile('calc.exe')
+        print ('Windows calculator... ')
+
 
     #calendar-------    
     def calendar_click(self):
+        """
         if self.frm_calendar==None:
             self.frm_calendar=ttkCalendar(master=self.master)
         elif self.frm_calendar.flag: #frm_products currently opened
@@ -137,7 +140,8 @@ class FormMenu:
         print ('called wait window')
         self.master.wait_window(self.frm_calendar.top)
         print ('exited from wait window')
-        print (self.frm_calendar.datepicked)
+        """
+        print ('calendar to do')
         
     def products_click(self):
         print ("products")
