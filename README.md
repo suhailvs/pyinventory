@@ -6,13 +6,20 @@ if you’d like to help out, hop on over to GitHub and send us a pull request!
 Windows installation
 --------------------
 
-pyinventory is an inventory and billing software developed using python3.2 tkinter and sqlite3. You need only python3x software installed on windows to run this. tkinter and sqlite3 modules are built in pythonx so no need to install these packages
+pyinventory is an inventory and billing software developed using python3.2 tkinter and sqlite3. You need only python3x software installed on windows to run this. tkinter and sqlite3 modules are built in python3.x so no need to install these packages
 
 
 Linux Installation
 ------------------
 
-for linux os, on `terminal` run:
+For linux os:
+
+Install Python3 Tkinter Package:
+
+	$ cd gui_app
+	$ sudo apt-get install python3-tk
+
+Run the app:
 
     $ python3 main.py
 

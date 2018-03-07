@@ -1,8 +1,7 @@
 from tkinter import *
 from tkinter.ttk import *
-import sql
-from guiwidgets.calendar import ttkCalendar
-from guiwidgets.listview import MultiListbox
+from modules.calendar import ttkCalendar
+from modules.listview import MultiListbox
 from blackbox import _init_toolbar
 from datetime import datetime #to understand currentdate
 
@@ -55,13 +54,13 @@ class FormMenu:
 
     def about_click(self):
         w=Toplevel()
-        lbl1=Label(w,text="Welcome to ShopPro. version=1.0")
+        lbl1=Label(w,text="Welcome to ShopPro. version=1.1")
         lbl1.pack(side="top",padx=10,pady=10)
         lbl2=Label(w,text="Developed by Suhail.VS(Palakkad,Kerala,India. mob:9946696699)")
         lbl2.pack(side="top",padx=10,pady=10)
-        lbl3=Label(w,text="You can found me on Facebook(suhailvs@gmail.com)")
+        lbl3=Label(w,text="contact me at: suhailvs@gmail.com")
         lbl3.pack(side="top",padx=10,pady=10)
-        lbl4=Label(w,text="website: http://www.suhail.zxq.net")
+        lbl4=Label(w,text="website: http://suhailvs.github.io")
         lbl4.pack(side="top",padx=10,pady=10)
 
     def _init_widgets(self):
@@ -162,7 +161,11 @@ class FormMenu:
 
                         #####################
                         #FormProducts class #
-                        #####################       
+                        #####################
+from db import Inventory_Product as Product
+from db import Inventory_Invoice as Invoice
+from db import Inventory_InvoiceItem as InvoiceItem
+
 class FormProducts:
     '''The Products window with toolbar and a datagrid of products'''
     def __init__(self):
@@ -175,8 +178,8 @@ class FormProducts:
         
     def _init_gridbox(self):
         self.mlb = MultiListbox(self.frame, (('id #',3),('Product', 25), ('Description', 25), ('Price', 10)))
-        tbproducts=sql.session._query("select * from products")
-        self.update_mlb(tbproducts)
+        #tbproducts=sql.session._query("select * from inventory_product")
+        self.update_mlb(items=Product.select())
         self.mlb.pack(expand=YES,fill=BOTH)
             
     #form product add button clicked()        
@@ -187,8 +190,7 @@ class FormProducts:
         self.frm_addproduct=FormAddProduct()
         self.frame.wait_window(self.frm_addproduct.frame)
         if self.frm_addproduct._okbtn_clicked==1:
-            tbproducts=sql.session._query("select * from products")
-            self.update_mlb(tbproducts)
+            self.update_mlb(Product.select())
         self.addproductflag=False
             
     def btn_edit_click(self):
@@ -196,24 +198,22 @@ class FormProducts:
         
     def btn_del_click(self):
         if self.mlb.item_selected==None: return 'please select first'
-        print (self.mlb.item_selected[1])
-        sql.session._delete_product(int(self.mlb.item_selected[1]))
+        # sql.session._delete_product(int(self.mlb.item_selected[1]))
+        item=Product.get(Product.id == self.mlb.item_selected[1])
+        item.delete_instance()
         self.mlb.delete(self.mlb.item_selected[0])
         self.mlb.item_selected=None
         
     def btn_find_click(self):
         fnd=self.entryfind.get()
-
-        tbproducts=sql.session._find_products(fnd)
-        self.update_mlb(tbproducts)
-    def update_mlb(self,tb):
+        #sql.session._find_products(fnd)
+        self.update_mlb(Product.select().where(Product.name.contains(fnd)))
+    def update_mlb(self,items):
         self.mlb.delete(0,END)
         #tbproducts=sql.session._query(q)
-        for row in tb:
-            self.mlb.insert(END, (int(row[0]),
-                                  row[1],
-                                  row[2],
-                                  int(row[3])))
+        for p in items:    
+            self.mlb.insert(END, (p.id,p.name,p.description,p.price))
+
         self.mlb.selection_set(0) #set first row selected
            
 #-------------------------------------------end of FormProducts class--------
@@ -230,7 +230,6 @@ class FormAddProduct:
         self.frame=Toplevel()
         self.frame.protocol("WM_DELETE_WINDOW", self.callback) #user quit the screen
         self._init_widgets()
-        
         
     def _init_widgets(self):
         self.label1=Label(self.frame,text="Product #")
@@ -250,22 +249,20 @@ class FormAddProduct:
 
         self.btn_ok=Button(self.frame,text="OK",width=7,command=self.btnok_click)
         self.btn_ok.grid(row=4,column=1,sticky=E)
-
-    
         
     def btnok_click(self):
         items=(self.entry1.get(),self.entry3.get(),int(self.entry2.get()))
         if '' in items:
             print ('please fill all boxes')
             return 'break'
-        sql.session._add_product(items)
-        
+
+        p = Product.create(name=items[0],description=items[1],price=items[2])
+        # sql.session._add_product(items)        
         self._okbtn_clicked=1
         print ('user exits the screen by clicking ok butn')
         self.frame.destroy()
         
-    def callback(self):
-        
+    def callback(self):        
         self._okbtn_clicked=0
         print ('user exits the screen')
         self.frame.destroy()
@@ -288,18 +285,15 @@ class FormInvoices:
         
     def _init_gridbox(self):
         self.mlb = MultiListbox(self.frame, (('id #',5),('Customer', 25), ('Date', 15), ('Grand Total', 15)))
-        tbproducts=sql.session._query("select * from invoices")
-        self.update_mlb(tbproducts)
+        # tbproducts=sql.session._query("select * from inventory_invoice")
+        self.update_mlb(Invoice.select())
         self.mlb.pack(expand=YES,fill=BOTH)
         
 
     def update_mlb(self,tb):
         self.mlb.delete(0,END)
-        for row in tb:
-            self.mlb.insert(END, (int(row[0]),
-                                  row[1],
-                                  row[2],
-                                  int(row[3])))
+        for i in tb:
+            self.mlb.insert(END, (i.id,i.customer,i.date,i.amount))
         self.mlb.selection_set(0) #set first row selected
     
     def btn_add_click(self):
@@ -317,8 +311,9 @@ class FormInvoices:
         self.editinvoiceflag=True
         self.frm_editinvoice=FormEditInvoice()
         self.frm_editinvoice.init_entryboxes(self.mlb.item_selected[1:])#(id,customer,date,amount)
-        tbinvitems=sql.session._show_invoice(self.mlb.item_selected[1])
-        self.frm_editinvoice.update_mlbitems(tbinvitems)
+        #tbinvitems=sql.session._show_invoice(self.mlb.item_selected[1])
+        items = InvoiceItem.select().where(InvoiceItem.invoice == int(self.mlb.item_selected[1]))
+        self.frm_editinvoice.update_mlbitems(items)
         self.frame.wait_window(self.frm_editinvoice.master)
         self.editinvoiceflag=False
     
@@ -326,7 +321,10 @@ class FormInvoices:
     def btn_del_click(self):
         if self.mlb.item_selected==None: return 'please select first'
         print (self.mlb.item_selected[1])
-        sql.session._delete_invoice(int(self.mlb.item_selected[1]))
+        #sql.session._delete_invoice(int(self.mlb.item_selected[1]))
+        item = Invoice.get(Invoice.id == self.mlb.item_selected[1])
+        item.delete_instance(recursive=True)
+        
         self.mlb.delete(self.mlb.item_selected[0])
         self.mlb.item_selected=None
     def btn_find_click(self):
@@ -351,8 +349,7 @@ class FormAddInvoice:
     def _init_widgets(self):
         self.frame0=Frame(self.master)
         label_entry(self.frame0,'Invoice# :')
-        rowid=sql.session._next_invoiceid()
-        self.frame0._entry.insert(END,str(rowid))
+        self.frame0._entry.insert(END,'xx')
         self.frame0._entry['state']=DISABLED
         self.frame0.pack(side=TOP)
         #frame1- lblcustomer, lbl_date, btn_date
@@ -452,24 +449,29 @@ class FormAddInvoice:
         no_of_items=self.mlbitems.size()
         if no_of_items==0:
             print('please select some products first')
-            return '0'
-        print('okbutton clicked')
-        i_d=int(self.frame0._entry.get())#invoiceid
-        tbinvitems_items=[]
+            return '0'        
+        #i_d=int(self.frame0._entry.get())#invoiceid
+        items=[]
         for item in range(no_of_items):
             temp1=self.mlbitems.get(item)
-            tbinvitems_items.append((temp1[0],
-                                i_d,temp1[1],temp1[3],))
+            items.append((temp1[1],temp1[3],)) # product_id, qty
+        # (customer, date, amount)
 
-        tbinv_item=(i_d,self.frame1._entry.get(),
-                    str(datetime.today())[:10],int(self.netamount.get()))
-        sql.session._add_invoice(tbinv_item,tbinvitems_items)
+        cur_inv = Invoice.create(
+            customer=self.frame1._entry.get(),
+            date=str(datetime.today()),
+            amount=self.netamount.get()
+        )
+        for i in items:
+            InvoiceItem.insert(
+                invoice=cur_inv,product=i[0],quantity=i[1]).execute()
+
+        # sql.session._add_invoice(tbinv,tbinv_items)
         self._okbtn_clicked=1
         print ('user exits the screen by clicking ok butn')
         self.master.destroy()
         
-    def callback(self):
-        
+    def callback(self):        
         self._okbtn_clicked=0
         print ('user exits the screen')
         self.master.destroy()
@@ -501,13 +503,11 @@ class LookupList:
         
                 
     def update_mlb(self,val):
-        x=self.tblookup._query("select * from products where name like '%"+val+"%' order by name")
+        # x = self.tblookup._query("select * from inventory_product where name like '%"+val+"%' order by name")
+        items = Product.select().where(Product.name.contains(val)).order_by(Product.name)
         self.mlb.delete(0,END)
-        for row in x:
-            self.mlb.insert(END, (int(row[0]),
-                                  row[1],
-                                  row[2],
-                                  int(row[3])))
+        for p in items:
+            self.mlb.insert(END, (p.id,p.name,p.description,p.price))
         self.mlb.selection_set(0) #set first row selected
         
 #-------------------------------------------end of FormAddInvoice class--------
@@ -552,11 +552,18 @@ class FormEditInvoice:
         self.frame2._entry2['state']=DISABLED
         
         self.frame4._entry.insert(END,val[3])
-        self.frame4._entry['state']=DISABLED
+        self.frame4._entry['state']=DISABLED        
         
-        
-    def update_mlbitems(self,invitems):
+    def update_mlbitems(self,items):
         self.mlbitems.delete(0,END)
-        for row in invitems:
-            self.mlbitems.insert(END,(row[0],row[1],row[2],row[3],row[4],row[5]))
+        for i in items:
+            qty,price = (i.quantity,i.product.price)
+            self.mlbitems.insert(END,(
+                i.id,
+                i.product.name,
+                qty,
+                i.product.description,
+                price,
+                price * qty)
+            )
         self.mlbitems.selection_set(0) #set first row selected
