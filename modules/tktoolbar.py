@@ -14,7 +14,7 @@ def _init_toolbar(tbmaster):
         '''
     tbmaster.tb=Frame(tbmaster.frame,borderwidth=1)#,relief=)
     tbmaster.tb.pack(side=TOP,fill=X)#####
-    imgdir="img/16x16/"
+    imgdir="images/16x16/"
     tbmaster.btn_add=Button(tbmaster.tb,command=tbmaster.btn_add_click)
     tbmaster.imgadd=PhotoImage(file=imgdir+"add.gif")
     tbmaster.btn_add['image']=tbmaster.imgadd

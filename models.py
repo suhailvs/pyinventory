@@ -21,6 +21,10 @@ class Inventory_InvoiceItem(BaseModel):
     product = ForeignKeyField(Inventory_Product,backref='product_invoiceitems')
     quantity = IntegerField()
 
+def create_tables_if_not_exist():
+    if not Inventory_Product.table_exists():
+        db.create_tables([Inventory_Invoice, Inventory_Product, Inventory_InvoiceItem])
+    
 """
 Usage:
 ======
