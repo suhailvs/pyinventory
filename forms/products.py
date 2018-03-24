@@ -42,8 +42,9 @@ class FormProducts:
         self.mlb.delete(self.mlb.item_selected[0])
         self.mlb.item_selected=None
         
-    def btn_find_click(self):
-        fnd=self.entryfind.get()
+    def tb_btnfind_click(self):
+        print('sadfsdadf')
+        fnd=self.tb_entryfind.get()
         #sql.session._find_products(fnd)
         self.update_mlb(Product.select().where(Product.name.contains(fnd)))
     def update_mlb(self,items):
@@ -67,6 +68,7 @@ class FormAddProduct:
         self.label1.grid(row=0,sticky=W)
         self.entry1=Entry(self.frame)
         self.entry1.grid(row=1,column=0)
+        self.entry1.focus()
         
         self.label2=Label(self.frame,text="Sales Price")
         self.label2.grid(row=0,column=1,sticky=W)
@@ -77,7 +79,8 @@ class FormAddProduct:
         self.label3.grid(row=2,sticky=W,columnspan=2)
         self.entry3=Entry(self.frame)
         self.entry3.grid(row=3,sticky=W+E,columnspan=2)
-
+        self.entry3.bind("<Return>", lambda e: self.btnok_click())
+        
         self.btn_ok=Button(self.frame,text="Add",width=7,command=self.btnok_click)
         self.btn_ok.grid(row=4,column=1,sticky=E)
         

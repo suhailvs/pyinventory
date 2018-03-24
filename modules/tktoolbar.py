@@ -30,11 +30,11 @@ def _init_toolbar(tbmaster):
     tbmaster.btn_delete['image']=tbmaster.imgdel
     tbmaster.btn_delete.pack(side=LEFT,padx=4,pady=4)
     
-    tbmaster.btn_find=Button(tbmaster.tb,command=tbmaster.btn_find_click)
+    tbmaster.btn_find=Button(tbmaster.tb,command=tbmaster.tb_btnfind_click)
     tbmaster.imgfind=PhotoImage(file=imgdir+"find.gif")
     tbmaster.btn_find['image']=tbmaster.imgfind
     tbmaster.btn_find.pack(side=LEFT,padx=4,pady=4)
     
-    tbmaster.entryfind=Entry(tbmaster.tb)
-    tbmaster.entryfind.pack(side=LEFT,padx=4,pady=4)
+    tbmaster.tb_entryfind=Entry(tbmaster.tb)
+    tbmaster.tb_entryfind.pack(side=LEFT,padx=4,pady=4)
 
