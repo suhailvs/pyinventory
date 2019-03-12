@@ -2,6 +2,7 @@ TODO.md
 db.sqlite3
 *.py[cod]
 product_sample.csv
+venv/
 # C extensions
 *.so
 

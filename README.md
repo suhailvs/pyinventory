@@ -16,11 +16,11 @@ For linux os:
 
 Install Python3 Tkinter Package:
 
-	$ cd gui_app
 	$ sudo apt-get install python3-tk
 
 Run the app:
 
+	$ cd pyinventory
     $ python3 main.py
 
 
