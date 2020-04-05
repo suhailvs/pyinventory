@@ -23,6 +23,10 @@ Run the app:
 	$ cd pyinventory
     $ python3 main.py
 
+Demo
+----
+
+![demo](https://raw.github.com/suhailvs/pyinventory/master/demo.gif)
 
 Screenshots
 -----------
