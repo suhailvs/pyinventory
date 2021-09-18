@@ -41,3 +41,12 @@ Screenshots
 [logo1]: https://raw.github.com/suhailvs/pyinventory/master/images/screenshots/screenshot1.jpg
 [logo2]: https://raw.github.com/suhailvs/pyinventory/master/images/screenshots/screenshot2.jpg
 [logo3]: https://raw.github.com/suhailvs/pyinventory/master/images/screenshots/screenshot3.jpg
+
+
+Make Ubuntu Executable file
+---------------------------
+
+	pip install pyinstaller
+	pyinstaller main.py --onefile
+	cp -r images dist/
+	./dist/main
