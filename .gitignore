@@ -1,8 +1,10 @@
 TODO.md
+db.sqlite3
 main.spec
 *.py[cod]
 product_sample.csv
-venv/
+env/
+output
 # C extensions
 *.so
 
